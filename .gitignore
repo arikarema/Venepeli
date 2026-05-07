@@ -1,0 +1,6 @@
+# Exclude the Processing sketchbook settings
+settings.txt
+
+# Ignore temporary files
+*.tmp
+*.bak
