@@ -24,6 +24,8 @@ float veneAngle = PI/2;
 float xFly = 0;
 float yFly = 0;
 float aalto = 10;
+float aaltoX = 0;
+float aaltoY = 0;
 
 boolean left = false;
 boolean right = false;
@@ -32,6 +34,7 @@ boolean rightBrake = false;
 
 
 int lastFrameCount = 0;
+float hiipuminen = 0;
 
 
 void setup () {
@@ -61,6 +64,10 @@ void keyPressed() {
     right = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += PI/180;
+    hiipuminen = 255;
+    aalto = 10;
+    aaltoX = x;
+    aaltoY = y;
   } else if (key == '9' && !rightBrake) {
     rightBrake = true;
     veneSpeed = veneSpeed-0.8;
@@ -95,9 +102,13 @@ void keyReleased() {
 void draw () {
   background(#6699bb);
   noFill ();
-  stroke (#FFFFFF);
+  strokeWeight(1);
+  stroke (255, hiipuminen);
 
-  arc (x+cos(PI/2+PI/8-veneAngle)*56, y+sin(PI/2+PI/8-veneAngle)*56, aalto, aalto, -(veneAngle+PI*1.5), -(veneAngle+PI));
+  arc (aaltoX+cos(PI/2+PI/8-veneAngle)*63, aaltoY+sin(PI/2+PI/8-veneAngle)*63, aalto, aalto, -(veneAngle+PI*1.7), -(veneAngle+PI/2));
+
+  hiipuminen -= 5;
+  aalto += 1;
 
   pushMatrix();
   translate(x, y);
