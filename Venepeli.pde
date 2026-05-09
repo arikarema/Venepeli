@@ -23,7 +23,7 @@ float veneSpeed = 0;
 float veneAngle = PI/2;
 float xFly = 0;
 float yFly = 0;
-float aalto = 10;
+float laajentuminen = 10;
 float aaltoX = 0;
 float aaltoY = 0;
 
@@ -36,6 +36,16 @@ boolean rightBrake = false;
 int lastFrameCount = 0;
 float hiipuminen = 0;
 
+float[] laajentuminenRight = new float[3];
+float[] laajentuminenLeft = new float[3];
+float[] hiipuminenRight = new float[3];
+float[] hiipuminenLeft = new float[3];
+
+int indexRight = 0;
+int indexLeft = 0;
+
+
+// -------------------------------------------------------------------------------
 
 void setup () {
   size (800, 600);
@@ -54,6 +64,13 @@ void setup () {
 
 // -------------------------------------------------------------------------------
 
+void aallot (float offset, float arcStart, float arcEnd, float size) {
+arc (aaltoX+cos(PI/2+PI/8-veneAngle)*offset, aaltoY+sin(PI/2+PI/8-veneAngle)*offset, size, size, -(veneAngle+arcStart), -(veneAngle+arcEnd)
+  );
+}
+
+
+
 void keyPressed() {
 
   if (key == '4' && !left) {
@@ -64,10 +81,16 @@ void keyPressed() {
     right = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += PI/180;
-    hiipuminen = 255;
-    aalto = 10;
+ //   hiipuminen = 255;
+ //   aalto = 10;
     aaltoX = x;
     aaltoY = y;
+    hiipuminenRight[indexRight] = 255;
+    laajentuminenRight[indexRight] = 10;
+    indexRight++;
+    if (indexRight > 2) {
+      indexRight = 0;
+    }
   } else if (key == '9' && !rightBrake) {
     rightBrake = true;
     veneSpeed = veneSpeed-0.8;
@@ -102,13 +125,19 @@ void keyReleased() {
 void draw () {
   background(#6699bb);
   noFill ();
-  strokeWeight(1);
-  stroke (255, hiipuminen);
+//  strokeWeight(1);
+//  stroke (255, hiipuminen);
+// arc (aaltoX+cos(PI/2+PI/8-veneAngle)*63, aaltoY+sin(PI/2+PI/8-veneAngle)*63, laajentuminen, laajentuminen, -(veneAngle+PI*1.7), -(veneAngle+PI/2));
 
-  arc (aaltoX+cos(PI/2+PI/8-veneAngle)*63, aaltoY+sin(PI/2+PI/8-veneAngle)*63, aalto, aalto, -(veneAngle+PI*1.7), -(veneAngle+PI/2));
+ // hiipuminen -= 5;
+ // laajentuminen += 1;
 
-  hiipuminen -= 5;
-  aalto += 1;
+for (int i = 0; i < 3; i++) {
+stroke(255, hiipuminenRight[i]);
+aallot(63, PI*1.7, PI/2, laajentuminenRight[i]);
+laajentuminenRight[i] += 1;
+hiipuminenRight[i] -=5;
+}
 
   pushMatrix();
   translate(x, y);
@@ -163,9 +192,6 @@ void draw () {
   veneAngleDiff = veneAngleDiff * 0.97;
   veneAngle = veneAngle + veneAngleDiff;
 
-  /*  if (veneAngleDiff < PI/8000 && veneAngleDiff > (-PI/8000) ) {
-   veneAngleDiff = 0;
-   } */
 
   // Calculate angle
   float targetAngle = atan2(y - yFly, x - xFly) + PI/2;
