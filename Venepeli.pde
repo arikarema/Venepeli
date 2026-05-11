@@ -23,9 +23,7 @@ float veneSpeed = 0;
 float veneAngle = PI/2;
 float xFly = 0;
 float yFly = 0;
-float laajentuminen = 10;
-float aaltoX = 0;
-float aaltoY = 0;
+
 
 boolean left = false;
 boolean right = false;
@@ -34,12 +32,18 @@ boolean rightBrake = false;
 
 
 int lastFrameCount = 0;
-float hiipuminen = 0;
 
-float[] laajentuminenRight = new float[3];
-float[] laajentuminenLeft = new float[3];
-float[] hiipuminenRight = new float[3];
-float[] hiipuminenLeft = new float[3];
+float[] laajentuminenRight = new float[10];
+float[] laajentuminenLeft = new float[10];
+float[] hiipuminenRight = new float[10];
+float[] hiipuminenLeft = new float[10];
+float[] aaltoXright = new float [10];
+float[] aaltoYright = new float [10];
+float[] aaltoXleft = new float [10];
+float[] aaltoYleft = new float [10];
+float[] veneAngleRight = new float [10];
+float[] veneAngleLeft = new float [10];
+
 
 int indexRight = 0;
 int indexLeft = 0;
@@ -64,8 +68,8 @@ void setup () {
 
 // -------------------------------------------------------------------------------
 
-void aallot (float offset, float arcStart, float arcEnd, float size) {
-arc (aaltoX+cos(PI/2+PI/8-veneAngle)*offset, aaltoY+sin(PI/2+PI/8-veneAngle)*offset, size, size, -(veneAngle+arcStart), -(veneAngle+arcEnd)
+void aallot (float positionX, float positionY, float angle, float offsetX, float arcStart, float arcEnd, float size) {
+arc (positionX+cos(PI/2+PI/8-angle)*offsetX, positionY+sin(PI/2+PI/8-angle)*63, size, size, -(angle+arcStart), -(angle+arcEnd)
   );
 }
 
@@ -77,18 +81,26 @@ void keyPressed() {
     left = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += -PI/180;
+    aaltoXleft[indexLeft] = x;
+    aaltoYleft[indexLeft] = y;
+    hiipuminenLeft[indexLeft] = 255;
+    laajentuminenLeft[indexLeft] = 10;
+    veneAngleLeft[indexLeft] = veneAngle;
+    indexLeft++;
+    if (indexLeft > 9) {
+      indexLeft = 0;
+    }
   } else if (key == '6' && !right) {
     right = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += PI/180;
- //   hiipuminen = 255;
- //   aalto = 10;
-    aaltoX = x;
-    aaltoY = y;
+    aaltoXright[indexRight] = x;
+    aaltoYright[indexRight] = y;
     hiipuminenRight[indexRight] = 255;
     laajentuminenRight[indexRight] = 10;
+    veneAngleRight[indexRight] = veneAngle;
     indexRight++;
-    if (indexRight > 2) {
+    if (indexRight > 9) {
       indexRight = 0;
     }
   } else if (key == '9' && !rightBrake) {
@@ -125,18 +137,20 @@ void keyReleased() {
 void draw () {
   background(#6699bb);
   noFill ();
-//  strokeWeight(1);
-//  stroke (255, hiipuminen);
-// arc (aaltoX+cos(PI/2+PI/8-veneAngle)*63, aaltoY+sin(PI/2+PI/8-veneAngle)*63, laajentuminen, laajentuminen, -(veneAngle+PI*1.7), -(veneAngle+PI/2));
 
- // hiipuminen -= 5;
- // laajentuminen += 1;
 
-for (int i = 0; i < 3; i++) {
+for (int i = 0; i < hiipuminenRight.length; i++) {
 stroke(255, hiipuminenRight[i]);
-aallot(63, PI*1.7, PI/2, laajentuminenRight[i]);
+aallot(aaltoXright[i], aaltoYright[i], veneAngleRight[i], 63, PI*1.7, PI/2, laajentuminenRight[i]);
 laajentuminenRight[i] += 1;
-hiipuminenRight[i] -=5;
+hiipuminenRight[i] -= 1;
+}
+
+for (int i = 0; i < hiipuminenLeft.length; i++) {
+stroke(255, hiipuminenLeft[i]);
+aallot(aaltoXleft[i], aaltoYleft[i], veneAngleLeft[i], -63, -PI/2, -PI*1.7, laajentuminenLeft[i]);
+laajentuminenLeft[i] += 1;
+hiipuminenLeft[i] -= 1;
 }
 
   pushMatrix();
