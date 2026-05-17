@@ -81,7 +81,6 @@ void createAalto(float ax, float ay, float angle) {
 void keyPressed() {
 
   if (key == '4' && !left) {
-    println("left");
     left = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += -PI/180;
@@ -90,7 +89,6 @@ void keyPressed() {
     createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle+radians(30));
 
   } else if (key == '6' && !right) {
-    println("right");
     right = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += PI/180;
@@ -146,9 +144,17 @@ void draw () {
     hiipuminen[i] -= 1;
   }
 
+
+
   pushMatrix();
   translate(x, y);
   rotate(PI/2-veneAngle);
+
+float aaltoWobble = sin(frameCount * 0.1);
+  stroke (255);
+  arc (0, aaltoWobble * 2 + 100, aaltoWobble *2 + 80, 300, -veneAngle - radians(90), -veneAngle + radians(90));
+  arc (0, aaltoWobble * 2   + 80, aaltoWobble *2 + 70, 120, -veneAngle - radians(80), -veneAngle + radians(80));
+  arc (0 , aaltoWobble * 2 + 100, aaltoWobble *2 + 60, 120, -veneAngle - radians(90), -veneAngle + radians(90));
   image(vene_img, 0, 0);
 
   if (left) {
