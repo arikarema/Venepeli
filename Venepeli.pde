@@ -10,6 +10,8 @@ PImage airo_r_img;
 PImage airo_rb_img;
 PImage airo_l_img;
 PImage airo_lb_img;
+PImage airo_lf_img;
+PImage airo_rf_img;
 
 float spin=0;
 final float wobbleAmplitude = 8;
@@ -30,15 +32,18 @@ boolean right = false;
 boolean leftBrake = false;
 boolean rightBrake = false;
 
-
 int lastFrameCount = 0;
+
+int aaltoIndex = 0;
+
 
 float[] laajentuminen = new float[10];
 float[] hiipuminen = new float[10];
 float[] aaltoX = new float [10];
 float[] aaltoY = new float [10];
 float[] aaltoAngle = new float [10];
-int aaltoIndex = 0;
+
+VeneAalto[] veneAallot = new VeneAalto [120];
 
 
 // -------------------------------------------------------------------------------
@@ -53,6 +58,8 @@ void setup () {
   airo_rb_img = loadImage("airo_rb.png");
   airo_l_img = loadImage("airo_l.png");
   airo_lb_img = loadImage("airo_lb.png");
+  airo_lf_img = loadImage("airo_lf.png");
+  airo_rf_img = loadImage("airo_rf.png");
 
   fly_images[0] = loadImage("fly.png");
   fly_images[1] = loadImage("fly2.png");
@@ -150,46 +157,56 @@ void draw () {
   translate(x, y);
   rotate(PI/2-veneAngle);
 
-float aaltoWobble = sin(frameCount * 0.1);
+//float aaltoWobble = sin(frameCount * 0.1);
+
   stroke (255);
-  arc (0, aaltoWobble * 2 + 100, aaltoWobble *2 + 80, 300, -veneAngle - radians(90), -veneAngle + radians(90));
-  arc (0, aaltoWobble * 2   + 80, aaltoWobble *2 + 70, 120, -veneAngle - radians(80), -veneAngle + radians(80));
-  arc (0 , aaltoWobble * 2 + 100, aaltoWobble *2 + 60, 120, -veneAngle - radians(90), -veneAngle + radians(90));
+  //arc (0, aaltoWobble * 2 + 100, aaltoWobble *2 + 80, 300, -PI/2 - radians(90), -PI/2 + radians(90));
+ // arc (0, aaltoWobble * 2   + 80, aaltoWobble *4 + 70, 120, -PI/2 - radians(70), -PI/2 + radians(70));
+  //arc (0 , aaltoWobble * 2 + 100, aaltoWobble *4 + 60, 120, -PI/2 - radians(80), -PI/2 + radians(80));
+//   point(30,100);
   image(vene_img, 0, 0);
+  
+
+
 
   if (left) {
     image(airo_lb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
     veneAngleDiff += (veneSpeed * 0.0002);
-  } else {
+  } 
+
+    if (leftBrake) {
+    image(airo_lf_img, 0, 0);
+    veneSpeed *= 1 - 0.001 * veneSpeed;
+    veneAngleDiff += (veneSpeed * 0.0000001);
+  }
+
+  if (!left && !leftBrake) {
     image(airo_l_img, 0, 0);
   }
+
 
   if (right) {
     image(airo_rb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
     veneAngleDiff -= (veneSpeed * 0.0002);
-  } else {
-    image(airo_r_img, 0, 0);
+  }
+
+
+  if (rightBrake) {
+    image(airo_rf_img, 0, 0);
+    veneSpeed *= 1 - 0.001 * veneSpeed;
+    veneAngleDiff -= (veneSpeed * 0.0000001);
+  }
+  
+  if (!right && !rightBrake) {
+  image(airo_r_img, 0, 0);
   }
 
   popMatrix();
 
-  if (leftBrake) {
-    //image(airo_lb_img, 0, 0);
-    veneSpeed *= 1 - 0.001 * veneSpeed;
-    veneAngleDiff += (veneSpeed * 0.0000001);
-  } //else {
-  //image(airo_l_img, 0, 0);
-  //}
 
-  if (rightBrake) {
-    //image(airo_rb_img, 0, 0);
-    veneSpeed *= 1 - 0.001 * veneSpeed;
-    veneAngleDiff -= (veneSpeed * 0.0000001);
-  } //else {
-  //image(airo_r_img, 0, 0);
-  //}
+
 
   x = x+(veneSpeed * cos(veneAngle));
   y = y-(veneSpeed * sin(veneAngle));
