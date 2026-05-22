@@ -35,16 +35,17 @@ boolean rightBrake = false;
 int lastFrameCount = 0;
 
 int aaltoIndex = 0;
+int aaltoNum = 20;
 
+float[] laajentuminen = new float[aaltoNum];
+float[] hiipuminen = new float[aaltoNum];
+float[] aaltoX = new float [aaltoNum];
+float[] aaltoY = new float [aaltoNum];
+float[] aaltoAngle = new float [aaltoNum];
 
-float[] laajentuminen = new float[10];
-float[] hiipuminen = new float[10];
-float[] aaltoX = new float [10];
-float[] aaltoY = new float [10];
-float[] aaltoAngle = new float [10];
-
-VeneAalto[] veneAallot = new VeneAalto [120];
-
+int veneAaltoNum = 30;
+VeneAalto[] veneAallot = new VeneAalto [veneAaltoNum];
+int veneAaltoIndex = 0;
 
 // -------------------------------------------------------------------------------
 
@@ -63,6 +64,7 @@ void setup () {
 
   fly_images[0] = loadImage("fly.png");
   fly_images[1] = loadImage("fly2.png");
+
 }
 
 // -------------------------------------------------------------------------------
@@ -80,14 +82,14 @@ void createAalto(float ax, float ay, float angle) {
     laajentuminen[aaltoIndex] = 10;
     aaltoAngle[aaltoIndex] = angle;
     aaltoIndex++;
-    if (aaltoIndex > 9) {
+    if (aaltoIndex > aaltoNum - 1) {
       aaltoIndex = 0;
     }
 }
 
 void keyPressed() {
 
-  if (key == '4' && !left) {
+  if (key == '4' && !left && !leftBrake) {
     left = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += -PI/180;
@@ -95,7 +97,7 @@ void keyPressed() {
     float a = veneAngle+PI/2;
     createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle+radians(30));
 
-  } else if (key == '6' && !right) {
+  } else if (key == '6' && !right && !rightBrake) {
     right = true;
     veneSpeed = veneSpeed+0.8;
     veneAngleDiff += PI/180;
@@ -103,14 +105,21 @@ void keyPressed() {
     float a = veneAngle-PI/2;
     createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(30));
 
-  } else if (key == '9' && !rightBrake) {
+  } else if (key == '9' && !rightBrake && !right) {
     rightBrake = true;
     veneSpeed = veneSpeed-0.8;
     veneAngleDiff += -PI/180;
-  } else if (key == '7' && !leftBrake) {
+
+    float a = veneAngle-PI/2;
+    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(-230));
+
+  } else if (key == '7' && !leftBrake && !left) {
     leftBrake = true;
     veneSpeed = veneSpeed-0.8;
     veneAngleDiff += PI/180;
+
+    float a = veneAngle+PI/2;
+    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(230));
 
   } else if (key == '0') {
     x = width/2;
@@ -142,6 +151,28 @@ void draw () {
   background(#6699bb);
   noFill ();
 
+  veneAallot[veneAaltoIndex] = new VeneAalto(x, y, veneAngle, veneSpeed);
+  veneAaltoIndex++;
+  if (veneAaltoIndex >= veneAaltoNum) {
+    veneAaltoIndex = 0;
+  }
+
+  for(int i = 0; i < veneAaltoNum; i++) {
+    if (veneAallot[i] == null) continue;
+    if (veneAallot[i].veneAaltoHimmennys <= 0) continue;
+    veneAallot[i].update();
+    veneAallot[i].show();
+     }
+  
+/*
+  veneAallot[veneAaltoIndex].show();
+  veneAaltoIndex++;
+  if (veneAaltoIndex >= veneAaltoNum) {
+    veneAaltoIndex = 0;
+  }
+  
+  */
+
   for (int i = 0; i < hiipuminen.length; i++) {
     if (hiipuminen[i] <= 0) continue;
     // continue jatkaa suoraan luuppia seuraavalla kierroksella
@@ -150,8 +181,6 @@ void draw () {
     laajentuminen[i] += 1;
     hiipuminen[i] -= 1;
   }
-
-
 
   pushMatrix();
   translate(x, y);

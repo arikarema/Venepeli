@@ -11,20 +11,26 @@ class VeneAalto {
         veneY = _y;
         veneAngle = _angle;
         veneLaajentuminen = 0;
-        veneAaltoHimmennys = _veneSpeed * 100;
+        veneAaltoHimmennys = _veneSpeed * 20;
+        //veneAaltoHimmennys = 255;
     }
 
     void update() {
-        veneLaajentuminen += 1;
+        veneLaajentuminen += 2;
         veneAaltoHimmennys -= 1;
+        if (veneAaltoHimmennys < 0) {
+            veneAaltoHimmennys = 0;
+            veneLaajentuminen = 0;
+        }
     }   
 
     void show() {
-
-        
-
-        stroke (255, veneAaltoHimmennys);
-        ellipse(veneX,veneY,40 + veneLaajentuminen,85 + veneLaajentuminen);
+    pushMatrix();
+    translate(veneX, veneY);
+    rotate(PI/2-veneAngle);        
+    stroke (255, veneAaltoHimmennys);
+    ellipse(0,0,40 + veneLaajentuminen,85 + veneLaajentuminen);
+    popMatrix();
     }
 
 }
