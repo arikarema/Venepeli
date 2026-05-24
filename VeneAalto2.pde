@@ -1,4 +1,4 @@
-class VeneAalto {
+class VeneAalto2 {
 
     float veneX;
     float veneY;
@@ -9,7 +9,7 @@ class VeneAalto {
     float veneAaltoHimmennys;
     float aaltoWobble;
 
-    VeneAalto(float _x, float _y, float _angle, float _veneSpeed, float _aaltoWobble) {
+    VeneAalto2(float _x, float _y, float _angle, float _veneSpeed, float _aaltoWobble) {
         veneX = _x;
         veneY = _y;
         veneAngle = _angle;
@@ -32,7 +32,7 @@ class VeneAalto {
 */
 
     void update2() {
-        veneLaajentuminenX += 0.35 * veneSpeed;
+        veneLaajentuminenX -= 0.35 * veneSpeed;
         veneLaajentuminenY += 0;
         veneAaltoHimmennys -= 2.5;
         if (veneAaltoHimmennys < 0) {
@@ -60,7 +60,7 @@ class VeneAalto {
     rotate(PI/2-veneAngle);        
     stroke (255, veneAaltoHimmennys);
     strokeWeight(2);
-    point (23+veneLaajentuminenX,-25+veneLaajentuminenY+aaltoWobble);
+    point (-23+veneLaajentuminenX,-25+veneLaajentuminenY+aaltoWobble);
     popMatrix();
     }
 }

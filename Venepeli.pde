@@ -35,7 +35,7 @@ boolean rightBrake = false;
 int lastFrameCount = 0;
 
 int aaltoIndex = 0;
-int aaltoNum = 20;
+int aaltoNum = 15;
 
 float[] laajentuminen = new float[aaltoNum];
 float[] hiipuminen = new float[aaltoNum];
@@ -43,9 +43,14 @@ float[] aaltoX = new float [aaltoNum];
 float[] aaltoY = new float [aaltoNum];
 float[] aaltoAngle = new float [aaltoNum];
 
-int veneAaltoNum = 30;
+int veneAaltoNum = 20;
 VeneAalto[] veneAallot = new VeneAalto [veneAaltoNum];
+VeneAalto2[] veneAallot2 = new VeneAalto2 [veneAaltoNum];
 int veneAaltoIndex = 0;
+float keulaAaltoHimmennys = 0;
+float veneAaltoX = 0;
+float veneAaltoY = 0;
+
 
 // -------------------------------------------------------------------------------
 
@@ -71,14 +76,15 @@ void setup () {
 
 void drawAalto(float positionX, float positionY, float angle, float size, float alpha) {
   stroke(255, alpha);
-  float aaltoWidth = radians(110);
+  strokeWeight(1);
+  float aaltoWidth = radians(120);
   arc (positionX, positionY, size, size, (angle+PI-aaltoWidth), (angle+PI+aaltoWidth));
 }
 
 void createAalto(float ax, float ay, float angle) {
     aaltoX[aaltoIndex] = ax;
     aaltoY[aaltoIndex] = ay;
-    hiipuminen[aaltoIndex] = 255;
+    hiipuminen[aaltoIndex] = 170;
     laajentuminen[aaltoIndex] = 10;
     aaltoAngle[aaltoIndex] = angle;
     aaltoIndex++;
@@ -95,7 +101,7 @@ void keyPressed() {
     veneAngleDiff += -PI/180;
 
     float a = veneAngle+PI/2;
-    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle+radians(30));
+    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle+radians(45));
 
   } else if (key == '6' && !right && !rightBrake) {
     right = true;
@@ -103,7 +109,7 @@ void keyPressed() {
     veneAngleDiff += PI/180;
 
     float a = veneAngle-PI/2;
-    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(30));
+    createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(45));
 
   } else if (key == '9' && !rightBrake && !right) {
     rightBrake = true;
@@ -151,7 +157,11 @@ void draw () {
   background(#6699bb);
   noFill ();
 
-  veneAallot[veneAaltoIndex] = new VeneAalto(x, y, veneAngle, veneSpeed);
+  float aaltoWobble = 2.5 * sin(frameCount * 0.15);
+  veneAaltoX = x * 0.2 + veneAaltoX * 0.8;
+  veneAaltoY = y * 0.2 + veneAaltoY * 0.8;
+  veneAallot[veneAaltoIndex] = new VeneAalto(veneAaltoX, veneAaltoY, veneAngle, veneSpeed, aaltoWobble);
+  veneAallot2[veneAaltoIndex] = new VeneAalto2(veneAaltoX, veneAaltoY, veneAngle, veneSpeed, aaltoWobble);
   veneAaltoIndex++;
   if (veneAaltoIndex >= veneAaltoNum) {
     veneAaltoIndex = 0;
@@ -160,18 +170,16 @@ void draw () {
   for(int i = 0; i < veneAaltoNum; i++) {
     if (veneAallot[i] == null) continue;
     if (veneAallot[i].veneAaltoHimmennys <= 0) continue;
-    veneAallot[i].update();
-    veneAallot[i].show();
+    veneAallot[i].update2();
+    veneAallot[i].show2();
+    if (veneAallot2[i] == null) continue;
+    if (veneAallot2[i].veneAaltoHimmennys <= 0) continue;
+    veneAallot2[i].update2();
+    veneAallot2[i].show2();
      }
   
-/*
-  veneAallot[veneAaltoIndex].show();
-  veneAaltoIndex++;
-  if (veneAaltoIndex >= veneAaltoNum) {
-    veneAaltoIndex = 0;
-  }
+ 
   
-  */
 
   for (int i = 0; i < hiipuminen.length; i++) {
     if (hiipuminen[i] <= 0) continue;
@@ -179,17 +187,29 @@ void draw () {
     // break lopettaa luupin suoraan
     drawAalto(aaltoX[i], aaltoY[i], aaltoAngle[i], laajentuminen[i], hiipuminen[i]);
     laajentuminen[i] += 1;
-    hiipuminen[i] -= 1;
+    hiipuminen[i] -= 0.5;
   }
+
+
+
+pushMatrix();
+translate(veneAaltoX, veneAaltoY);
+rotate(PI/2-veneAngle);
+
+keulaAaltoHimmennys = veneSpeed * 40;
+
+  stroke (255,keulaAaltoHimmennys);
+  strokeWeight(1);
+  arc (0, aaltoWobble + 95, 83, 295, -PI/2 - radians(35), -PI/2 + radians(35));
+  popMatrix();
+
 
   pushMatrix();
   translate(x, y);
   rotate(PI/2-veneAngle);
 
-//float aaltoWobble = sin(frameCount * 0.1);
 
-  stroke (255);
-  //arc (0, aaltoWobble * 2 + 100, aaltoWobble *2 + 80, 300, -PI/2 - radians(90), -PI/2 + radians(90));
+  
  // arc (0, aaltoWobble * 2   + 80, aaltoWobble *4 + 70, 120, -PI/2 - radians(70), -PI/2 + radians(70));
   //arc (0 , aaltoWobble * 2 + 100, aaltoWobble *4 + 60, 120, -PI/2 - radians(80), -PI/2 + radians(80));
 //   point(30,100);
