@@ -43,14 +43,16 @@ float[] aaltoX = new float [aaltoNum];
 float[] aaltoY = new float [aaltoNum];
 float[] aaltoAngle = new float [aaltoNum];
 
-int veneAaltoNum = 20;
-VeneAalto[] veneAallot = new VeneAalto [veneAaltoNum];
-VeneAalto2[] veneAallot2 = new VeneAalto2 [veneAaltoNum];
-int veneAaltoIndex = 0;
+int aaltoPointNum = 50;
+AaltoPoint[] aaltoPoints = new AaltoPoint [aaltoPointNum];
+int aaltoPointIndex = 0;
 float keulaAaltoHimmennys = 0;
-float veneAaltoX = 0;
-float veneAaltoY = 0;
+float aaltoDelayX = 0;
+float aaltoDelayY = 0;
 
+int aaltoCircleNum = 50;
+AaltoCircle[] aaltoCircles = new AaltoCircle[aaltoCircleNum];
+int aaltoCircleIndex = 0;
 
 // -------------------------------------------------------------------------------
 
@@ -84,7 +86,7 @@ void drawAalto(float positionX, float positionY, float angle, float size, float 
 void createAalto(float ax, float ay, float angle) {
     aaltoX[aaltoIndex] = ax;
     aaltoY[aaltoIndex] = ay;
-    hiipuminen[aaltoIndex] = 170;
+    hiipuminen[aaltoIndex] = 150;
     laajentuminen[aaltoIndex] = 10;
     aaltoAngle[aaltoIndex] = angle;
     aaltoIndex++;
@@ -158,28 +160,37 @@ void draw () {
   noFill ();
 
   float aaltoWobble = 2.5 * sin(frameCount * 0.15);
-  veneAaltoX = x * 0.2 + veneAaltoX * 0.8;
-  veneAaltoY = y * 0.2 + veneAaltoY * 0.8;
-  veneAallot[veneAaltoIndex] = new VeneAalto(veneAaltoX, veneAaltoY, veneAngle, veneSpeed, aaltoWobble);
-  veneAallot2[veneAaltoIndex] = new VeneAalto2(veneAaltoX, veneAaltoY, veneAngle, veneSpeed, aaltoWobble);
-  veneAaltoIndex++;
-  if (veneAaltoIndex >= veneAaltoNum) {
-    veneAaltoIndex = 0;
+  aaltoDelayX = x * 0.15 + aaltoDelayX * 0.85;
+  aaltoDelayY = y * 0.15 + aaltoDelayY * 0.85;
+  aaltoPoints[aaltoPointIndex] = new AaltoPoint(aaltoDelayX, aaltoDelayY, veneAngle, veneSpeed, aaltoWobble);
+  aaltoPointIndex++;
+  if (aaltoPointIndex >= aaltoPointNum) {
+    aaltoPointIndex = 0;
   }
 
-  for(int i = 0; i < veneAaltoNum; i++) {
-    if (veneAallot[i] == null) continue;
-    if (veneAallot[i].veneAaltoHimmennys <= 0) continue;
-    veneAallot[i].update2();
-    veneAallot[i].show2();
-    if (veneAallot2[i] == null) continue;
-    if (veneAallot2[i].veneAaltoHimmennys <= 0) continue;
-    veneAallot2[i].update2();
-    veneAallot2[i].show2();
+  for(int i = 0; i < aaltoPointNum; i++) {
+    if (aaltoPoints[i] == null) continue;
+    if (aaltoPoints[i].aaltoHimmennys <= 0) continue;
+    aaltoPoints[i].updateR();
+    aaltoPoints[i].showR();
+    aaltoPoints[i].updateL();
+    aaltoPoints[i].showL();
      }
-  
- 
-  
+
+ /*
+    aaltoCircles[aaltoCircleIndex] = new AaltoCircle(x, y, veneAngle, veneSpeed);
+    aaltoCircleIndex++;
+    if (aaltoCircleIndex >= aaltoCircleNum) {
+      aaltoCircleIndex = 0;
+    }
+
+    for(int i = 0; i < aaltoCircleNum; i++) {
+    if (aaltoCircles[i] == null) continue;
+    if (aaltoCircles[i].aaltoHimmennys <= 0) continue;
+    aaltoCircles[i].update();
+    aaltoCircles[i].show();
+     }
+  */
 
   for (int i = 0; i < hiipuminen.length; i++) {
     if (hiipuminen[i] <= 0) continue;
@@ -193,15 +204,19 @@ void draw () {
 
 
 pushMatrix();
-translate(veneAaltoX, veneAaltoY);
+translate(aaltoDelayX, aaltoDelayY);
 rotate(PI/2-veneAngle);
-
 keulaAaltoHimmennys = veneSpeed * 40;
-
-  stroke (255,keulaAaltoHimmennys);
+stroke (255,keulaAaltoHimmennys);
   strokeWeight(1);
-  arc (0, aaltoWobble + 95, 83, 295, -PI/2 - radians(35), -PI/2 + radians(35));
-  popMatrix();
+  arc (0, aaltoWobble + 93, 83, 295, -PI/2 - radians(32), -PI/2 + radians(32));
+  /*
+  arc (0 , -aaltoWobble - 2, 80, 100, PI/2 - radians(46), PI/2 + radians(46));
+  arc (0 , -aaltoWobble - 7, 80, 100, PI/2 - radians(42), PI/2 + radians(42));
+    arc (0 , -aaltoWobble - 12, 80, 100, PI/2 - radians(37), PI/2 + radians(37));
+    arc (0 , -aaltoWobble - 17, 80, 100, PI/2 - radians(32), PI/2 + radians(32));
+  */
+    popMatrix();
 
 
   pushMatrix();
@@ -210,9 +225,7 @@ keulaAaltoHimmennys = veneSpeed * 40;
 
 
   
- // arc (0, aaltoWobble * 2   + 80, aaltoWobble *4 + 70, 120, -PI/2 - radians(70), -PI/2 + radians(70));
-  //arc (0 , aaltoWobble * 2 + 100, aaltoWobble *4 + 60, 120, -PI/2 - radians(80), -PI/2 + radians(80));
-//   point(30,100);
+
   image(vene_img, 0, 0);
   
 
