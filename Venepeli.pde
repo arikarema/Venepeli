@@ -87,7 +87,7 @@ void createAalto(float ax, float ay, float angle) {
     aaltoX[aaltoIndex] = ax;
     aaltoY[aaltoIndex] = ay;
     hiipuminen[aaltoIndex] = 150;
-    laajentuminen[aaltoIndex] = 10;
+    laajentuminen[aaltoIndex] = 5;
     aaltoAngle[aaltoIndex] = angle;
     aaltoIndex++;
     if (aaltoIndex > aaltoNum - 1) {
@@ -99,7 +99,7 @@ void keyPressed() {
 
   if (key == '4' && !left && !leftBrake) {
     left = true;
-    veneSpeed = veneSpeed+0.8;
+    veneSpeed = veneSpeed+1;
     veneAngleDiff += -PI/180;
 
     float a = veneAngle+PI/2;
@@ -107,7 +107,7 @@ void keyPressed() {
 
   } else if (key == '6' && !right && !rightBrake) {
     right = true;
-    veneSpeed = veneSpeed+0.8;
+    veneSpeed = veneSpeed+1;
     veneAngleDiff += PI/180;
 
     float a = veneAngle-PI/2;
@@ -115,7 +115,7 @@ void keyPressed() {
 
   } else if (key == '9' && !rightBrake && !right) {
     rightBrake = true;
-    veneSpeed = veneSpeed-0.8;
+    veneSpeed = veneSpeed-1;
     veneAngleDiff += -PI/180;
 
     float a = veneAngle-PI/2;
@@ -123,7 +123,7 @@ void keyPressed() {
 
   } else if (key == '7' && !leftBrake && !left) {
     leftBrake = true;
-    veneSpeed = veneSpeed-0.8;
+    veneSpeed = veneSpeed-1;
     veneAngleDiff += PI/180;
 
     float a = veneAngle+PI/2;
@@ -160,8 +160,8 @@ void draw () {
   noFill ();
 
   float aaltoWobble = 2.5 * sin(frameCount * 0.15);
-  aaltoDelayX = x * 0.15 + aaltoDelayX * 0.85;
-  aaltoDelayY = y * 0.15 + aaltoDelayY * 0.85;
+  aaltoDelayX = x * 0.12 + aaltoDelayX * 0.88;
+  aaltoDelayY = y * 0.12 + aaltoDelayY * 0.88;
   aaltoPoints[aaltoPointIndex] = new AaltoPoint(aaltoDelayX, aaltoDelayY, veneAngle, veneSpeed, aaltoWobble);
   aaltoPointIndex++;
   if (aaltoPointIndex >= aaltoPointNum) {
@@ -198,7 +198,7 @@ void draw () {
     // break lopettaa luupin suoraan
     drawAalto(aaltoX[i], aaltoY[i], aaltoAngle[i], laajentuminen[i], hiipuminen[i]);
     laajentuminen[i] += 1;
-    hiipuminen[i] -= 0.5;
+    hiipuminen[i] -= 0.6;
   }
 
 
@@ -209,7 +209,7 @@ rotate(PI/2-veneAngle);
 keulaAaltoHimmennys = veneSpeed * 40;
 stroke (255,keulaAaltoHimmennys);
   strokeWeight(1);
-  arc (0, aaltoWobble + 93, 83, 295, -PI/2 - radians(32), -PI/2 + radians(32));
+  arc (0, aaltoWobble + 92, 86, 295, -PI/2 - radians(32), -PI/2 + radians(32));
   /*
   arc (0 , -aaltoWobble - 2, 80, 100, PI/2 - radians(46), PI/2 + radians(46));
   arc (0 , -aaltoWobble - 7, 80, 100, PI/2 - radians(42), PI/2 + radians(42));
@@ -273,10 +273,15 @@ stroke (255,keulaAaltoHimmennys);
   x = x+(veneSpeed * cos(veneAngle));
   y = y-(veneSpeed * sin(veneAngle));
 
+
   if (veneSpeed < 0 ) {
     veneSpeed *= 0.96;
-  } else {
-    veneSpeed *= 0.99;
+  }
+  else if (veneSpeed > 2.5) {
+  veneSpeed *= 0.988;
+  }
+   else {
+    veneSpeed *= 0.992;
   }
   veneAngleDiff = veneAngleDiff * 0.97;
   veneAngle = veneAngle + veneAngleDiff;

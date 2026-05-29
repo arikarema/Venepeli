@@ -40,7 +40,7 @@ class AaltoPoint {
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-20);
     strokeWeight(2);
-    point (21+laajentuminenXright,-32+laajentuminenY+aaltoWobble);
+    point (21+laajentuminenXright,-33+laajentuminenY+aaltoWobble);
     popMatrix();
     }
     
@@ -61,7 +61,7 @@ class AaltoPoint {
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-20);
     strokeWeight(2);
-    point (-21+laajentuminenXleft,-32+laajentuminenY+aaltoWobble);
+    point (-21+laajentuminenXleft,-33+laajentuminenY+aaltoWobble);
     popMatrix();
     }
 }
