@@ -240,7 +240,7 @@ void draw () {
     }
     if (airoLeftDown) {
     stroke (255, keulaAaltoHimmennys+50);
-    arc (-52, aaltoWobble + 103, 50, 195, -PI/2 - radians(32), -PI/2 + radians(10));
+    arc (-50, aaltoWobble + 103, 50, 195, -PI/2 - radians(32), -PI/2 + radians(10));
     }
     image(airo_lb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
@@ -265,7 +265,7 @@ void draw () {
     }
     if (airoRightDown) {
       stroke (255, keulaAaltoHimmennys+50);
-      arc (52, aaltoWobble + 103, 50, 195, -PI/2 - radians(10), -PI/2 + radians(32));
+      arc (50, aaltoWobble + 103, 50, 195, -PI/2 - radians(10), -PI/2 + radians(32));
     }
     image(airo_rb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
