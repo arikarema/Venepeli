@@ -54,6 +54,12 @@ int aaltoCircleNum = 50;
 AaltoCircle[] aaltoCircles = new AaltoCircle[aaltoCircleNum];
 int aaltoCircleIndex = 0;
 
+boolean airoRightDown = false;
+boolean airoLeftDown = false;
+float startTimeRight;
+float startTimeLeft;
+int delayTime = 150; // Millisekunteina
+
 // -------------------------------------------------------------------------------
 
 void setup () {
@@ -100,13 +106,15 @@ void keyPressed() {
     left = true;
     veneSpeed = veneSpeed+1;
     veneAngleDiff += -PI/180;
-
     float a = veneAngle+PI/2;
     createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle+radians(45));
+    startTimeLeft = millis();
+
   } else if (key == '6' && !right && !rightBrake) {
     right = true;
     veneSpeed = veneSpeed+1;
     veneAngleDiff += PI/180;
+    startTimeRight = millis();
 
     float a = veneAngle-PI/2;
     createAalto(x + cos(a)*63, y  - sin(a)*63, -veneAngle-radians(45));
@@ -136,9 +144,11 @@ void keyPressed() {
 void keyReleased() {
   if (key == '4') {
     left = false;
+    airoLeftDown = false;
   }
   if (key == '6') {
     right = false;
+    airoRightDown = false;
   }
   if (key == '7') {
     leftBrake = false;
@@ -225,8 +235,13 @@ void draw () {
   rotate(PI/2-veneAngle);
 
   if (left) {
-    stroke (255, keulaAaltoHimmennys);
+    if (millis() - startTimeLeft >= delayTime && !airoLeftDown) {
+      airoLeftDown = true;
+    }
+    if (airoLeftDown) {
+    stroke (255, keulaAaltoHimmennys+50);
     arc (-52, aaltoWobble + 103, 50, 195, -PI/2 - radians(32), -PI/2 + radians(10));
+    }
     image(airo_lb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
     veneAngleDiff += (veneSpeed * 0.0002);
@@ -244,12 +259,17 @@ void draw () {
 
 
   if (right) {
-    stroke (255, keulaAaltoHimmennys);
-    arc (52, aaltoWobble + 103, 50, 195, -PI/2 - radians(10), -PI/2 + radians(32));
+    
+    if (millis() - startTimeRight >= delayTime && !airoRightDown) {
+      airoRightDown = true;
+    }
+    if (airoRightDown) {
+      stroke (255, keulaAaltoHimmennys+50);
+      arc (52, aaltoWobble + 103, 50, 195, -PI/2 - radians(10), -PI/2 + radians(32));
+    }
     image(airo_rb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
     veneAngleDiff -= (veneSpeed * 0.0002);
-
   }
 
 
