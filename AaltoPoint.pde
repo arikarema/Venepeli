@@ -1,7 +1,9 @@
 class AaltoPoint {
 
     float x;
-    float y;
+    float y;    
+    float xDelay;
+    float yDelay;
     float laajentuminenXleft;
     float laajentuminenXleft2;
     float laajentuminenXright;
@@ -10,9 +12,11 @@ class AaltoPoint {
     float aaltoHimmennys;
     float aaltoWobble;
 
-    AaltoPoint(float _x, float _y, float _angle, float _veneSpeed, float _aaltoWobble) {
+    AaltoPoint(float _x, float _y, float _xDelay, float _yDelay, float _angle, float _veneSpeed, float _aaltoWobble) {
         x = _x;
         y = _y;
+        xDelay = _xDelay;
+        yDelay = _yDelay;
         veneAngle = _angle;
         laajentuminenXleft = 0;
         laajentuminenXleft2 = 0;
@@ -39,7 +43,7 @@ class AaltoPoint {
 
     void showR() {
     pushMatrix();
-    translate(x, y);
+    translate(xDelay, yDelay);
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-20);
     strokeWeight(2);
@@ -49,11 +53,21 @@ class AaltoPoint {
 
     void showR2() {
     pushMatrix();
-    translate(x, y);
+    translate(xDelay, yDelay);
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-70);
     strokeWeight(2);
     point (23+laajentuminenXright2,-42+aaltoWobble);
+    popMatrix();
+    }
+
+    void showR3() {
+    pushMatrix();
+    translate(x, y);
+    rotate(PI/2-veneAngle);  
+    stroke (255, aaltoHimmennys);
+    strokeWeight(2);
+    point (63,21+aaltoWobble);
     popMatrix();
     }
     
@@ -71,7 +85,7 @@ class AaltoPoint {
     
     void showL() {
     pushMatrix();
-    translate(x, y);
+    translate(xDelay, yDelay);
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-20);
     strokeWeight(2);
@@ -81,7 +95,7 @@ class AaltoPoint {
 
     void showL2() {
     pushMatrix();
-    translate(x, y);
+    translate(xDelay, yDelay);
     rotate(PI/2-veneAngle);        
     stroke (255, aaltoHimmennys-70);
     strokeWeight(2);

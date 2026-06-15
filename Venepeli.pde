@@ -49,6 +49,16 @@ int aaltoPointIndex = 0;
 float keulaAaltoHimmennys = 0;
 float aaltoDelayX = 0;
 float aaltoDelayY = 0;
+float leftArcHimmennys = 0;
+float rightArcHimmennys = 0;
+float leftArcLaajentuminen = 0;
+float rightArcLaajentuminen = 0;
+float rightArcX = 0;
+float rightArcY = 0;
+float leftArcX = 0;
+float leftArcY = 0;
+float rightArcAngle = 0;
+float leftArcAngle = 0;
 
 int aaltoCircleNum = 50;
 AaltoCircle[] aaltoCircles = new AaltoCircle[aaltoCircleNum];
@@ -167,7 +177,7 @@ void draw () {
   float aaltoWobble = 2.5 * sin(frameCount * 0.15);
   aaltoDelayX = x * 0.12 + aaltoDelayX * 0.88;
   aaltoDelayY = y * 0.12 + aaltoDelayY * 0.88;
-  aaltoPoints[aaltoPointIndex] = new AaltoPoint(aaltoDelayX, aaltoDelayY, veneAngle, veneSpeed, aaltoWobble);
+  aaltoPoints[aaltoPointIndex] = new AaltoPoint(x, y,aaltoDelayX, aaltoDelayY, veneAngle, veneSpeed, aaltoWobble);
   aaltoPointIndex++;
   if (aaltoPointIndex >= aaltoPointNum) {
     aaltoPointIndex = 0;
@@ -179,10 +189,12 @@ void draw () {
     aaltoPoints[i].updateR();
     aaltoPoints[i].showR();
     aaltoPoints[i].showR2();
-    
     aaltoPoints[i].updateL();
     aaltoPoints[i].showL();
     aaltoPoints[i].showL2();
+    if (airoRightDown) {
+      aaltoPoints[i].showR3();
+    }
   }
 
   /*
@@ -220,27 +232,45 @@ void draw () {
   arc (0, aaltoWobble + 93, 86, 295, -PI/2 - radians(32), -PI/2 + radians(32));
   stroke (255, keulaAaltoHimmennys-100);
   arc (0, aaltoWobble + 63, 86, 265, -PI/2 - radians(42), -PI/2 + radians(42));
-  
-  /*
-  arc (0 , -aaltoWobble - 2, 80, 100, PI/2 - radians(46), PI/2 + radians(46));
-   arc (0 , -aaltoWobble - 7, 80, 100, PI/2 - radians(42), PI/2 + radians(42));
-   arc (0 , -aaltoWobble - 12, 80, 100, PI/2 - radians(37), PI/2 + radians(37));
-   arc (0 , -aaltoWobble - 17, 80, 100, PI/2 - radians(32), PI/2 + radians(32));
-   */
+
   popMatrix();
 
+  pushMatrix();
+  translate(rightArcX, rightArcY);
+  rotate(PI/2-rightArcAngle);
 
+  stroke (255, 150*leftArcHimmennys);
+  arc (-50, aaltoWobble + 103, 50, 195, -PI/2 - radians(32), -PI/2 + radians(10));
+  stroke (255, 150*rightArcHimmennys);
+  arc (50, aaltoWobble+103, 50+rightArcLaajentuminen, 195+rightArcLaajentuminen, -PI/2 - radians(10), -PI/2 + radians(32));
+  
+  leftArcHimmennys -= 0.005;
+  rightArcHimmennys -= 0.005;
+
+  if (leftArcHimmennys < 0) {
+    leftArcHimmennys = 0;
+  }
+  if (rightArcHimmennys < 0) {
+    rightArcHimmennys = 0;
+  }
+  if (!airoRightDown && rightArcHimmennys > 0) {
+    rightArcLaajentuminen+= 1.5;
+  }
+
+  popMatrix();
+  
   pushMatrix();
   translate(x, y);
   rotate(PI/2-veneAngle);
+
+  image(vene_img, 0, 0);
 
   if (left) {
     if (millis() - startTimeLeft >= delayTime && !airoLeftDown) {
       airoLeftDown = true;
     }
     if (airoLeftDown) {
-    stroke (255, keulaAaltoHimmennys+50);
-    arc (-50, aaltoWobble + 103, 50, 195, -PI/2 - radians(32), -PI/2 + radians(10));
+    leftArcHimmennys = 1;
     }
     image(airo_lb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
@@ -264,9 +294,15 @@ void draw () {
       airoRightDown = true;
     }
     if (airoRightDown) {
-      stroke (255, keulaAaltoHimmennys+50);
-      arc (50, aaltoWobble + 103, 50, 195, -PI/2 - radians(10), -PI/2 + radians(32));
+
+    rightArcHimmennys = 1;
+    rightArcX = x;
+    rightArcY = y;
+    rightArcAngle = veneAngle;
+    rightArcLaajentuminen = 0;
+
     }
+
     image(airo_rb_img, 0, 0);
     veneSpeed *= 1 - 0.001 * veneSpeed;
     veneAngleDiff -= (veneSpeed * 0.0002);
@@ -284,7 +320,7 @@ void draw () {
     image(airo_r_img, 0, 0);
   }
 
-  image(vene_img, 0, 0);
+
 
   popMatrix();
 
